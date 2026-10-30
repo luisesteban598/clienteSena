@@ -14,7 +14,8 @@
             <ul class="navbar-nav ms-auto align-items-xl-center gap-xl-1 py-3 py-xl-0">
                 <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Inicio</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('nosotros') }}">Nosotros</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('news.public') }}">Noticias</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('news.index') }}">Noticias</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('apprentice.index') }}">Aprendices</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('curso.index') }}">Cursos</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('area.index') }}">Áreas</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('computer.index') }}">Computadores</a></li>

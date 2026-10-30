@@ -2,8 +2,6 @@
 
 @section('content')
 <main class="management-page">
-    @include('includes.flash')
-
     <div class="management-header">
         <div>
             <span class="management-kicker">Nuevo registro</span>
@@ -14,15 +12,16 @@
     </div>
 
     <section class="form-management-card">
-        <form action="{{ route('area.store') }}" method="POST">
+        <form action="{{ route('area.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="form-group">
                 <label for="name">Nombre</label>
                 <input type="text" id="name" name="name" value="{{ old('name') }}" required>
-                @error('name')
-                    <small class="text-danger">{{ $message }}</small>
-                @enderror
+                <div class="mb-3">
+                    <label for="imagen" class="form-label">Imagen</label>
+                    <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*" required>
+                </div>
             </div>
 
             <div class="detail-actions" style="padding-left:0;background:transparent;">

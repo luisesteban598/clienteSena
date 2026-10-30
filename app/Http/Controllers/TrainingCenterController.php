@@ -2,26 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
 
 class TrainingCenterController extends Controller
 {
+
     private function fetchDataFromApi($url)
     {
         $response = Http::get($url);
-        $response->throw();
-
         return $response->json();
     }
 
     public function index()
     {
         $url = env('URL_SERVER_API');
+
         $trainingCenters = $this->fetchDataFromApi($url . '/training-centers');
 
         return view('TrainingCenter.index', compact('trainingCenters'));
     }
+
+    public function show($id)
+    {
+        $url = env('URL_SERVER_API');
+
+        $trainingCenter = $this->fetchDataFromApi($url . '/training-centers/' . $id);
+
+        return view('TrainingCenter.show', compact('trainingCenter'));
+    }
+
 
     public function create()
     {
@@ -30,18 +40,23 @@ class TrainingCenterController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'imagen' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
+
         $url = env('URL_SERVER_API');
-        Http::post($url . '/training-centers', $request->only(['name', 'location']))->throw();
+        $file = $request->file('imagen');
 
-        return redirect()->route('trainingCenter.index')->with('success', 'Centro de formación creado correctamente.');
-    }
+        Http::attach('imagen', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
+            ->post($url . '/training-centers', [
+                'name' => $request->name,
+                'location' => $request->location
+            ])
+            ->throw();
 
-    public function show($id)
-    {
-        $url = env('URL_SERVER_API');
-        $trainingCenter = $this->fetchDataFromApi($url . '/training-centers/' . $id);
-
-        return view('TrainingCenter.show', compact('trainingCenter'));
+        return redirect()->route('trainingCenter.index');
     }
 
     public function edit($id)
@@ -55,16 +70,17 @@ class TrainingCenterController extends Controller
     public function update(Request $request, $id)
     {
         $url = env('URL_SERVER_API');
-        Http::put($url . '/training-centers/' . $id, $request->only(['name', 'location']))->throw();
 
-        return redirect()->route('trainingCenter.index')->with('success', 'Centro de formación actualizado correctamente.');
+        Http::put($url . '/training-centers/' . $id, $request->all())->throw();
+
+        return redirect()->route('trainingCenter.index');
     }
 
     public function destroy($id)
     {
         $url = env('URL_SERVER_API');
         Http::delete($url . '/training-centers/' . $id)->throw();
-
-        return redirect()->route('trainingCenter.index')->with('success', 'Centro de formación eliminado correctamente.');
+        return redirect()->route('trainingCenter.index');
     }
+
 }

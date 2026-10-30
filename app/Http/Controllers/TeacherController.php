@@ -23,6 +23,14 @@ class TeacherController extends Controller
         return view('Teacher.index', compact('teachers'));
     }
 
+    public function show($id)
+    {
+        $url = env('URL_SERVER_API');
+        $teacher = $this->fetchDataFromApi($url . '/teachers/' . $id);
+
+        return view('Teacher.show', compact('teacher'));
+    }
+
     public function create()
     {
         $url = env('URL_SERVER_API');
@@ -44,14 +52,6 @@ class TeacherController extends Controller
         ]))->throw();
 
         return redirect()->route('teacher.index')->with('success', 'Instructor creado correctamente.');
-    }
-
-    public function show($id)
-    {
-        $url = env('URL_SERVER_API');
-        $teacher = $this->fetchDataFromApi($url . '/teachers/' . $id);
-
-        return view('Teacher.show', compact('teacher'));
     }
 
     public function edit($id)

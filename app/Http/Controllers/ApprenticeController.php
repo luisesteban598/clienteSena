@@ -23,6 +23,14 @@ class ApprenticeController extends Controller
         return view('Apprentice.index', compact('apprentices'));
     }
 
+    public function show($id)
+    {
+        $url = env('URL_SERVER_API');
+        $apprentice = $this->fetchDataFromApi($url . '/apprentices/' . $id);
+
+        return view('Apprentice.show', compact('apprentice'));
+    }
+
     public function create()
     {
         $url = env('URL_SERVER_API');
@@ -45,14 +53,6 @@ class ApprenticeController extends Controller
         ]))->throw();
 
         return redirect()->route('apprentice.index')->with('success', 'Aprendiz creado correctamente.');
-    }
-
-    public function show($id)
-    {
-        $url = env('URL_SERVER_API');
-        $apprentice = $this->fetchDataFromApi($url . '/apprentices/' . $id);
-
-        return view('Apprentice.show', compact('apprentice'));
     }
 
     public function edit($id)

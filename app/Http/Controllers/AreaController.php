@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
 
 class AreaController extends Controller
 {
+
     private function fetchDataFromApi($url)
     {
         $response = Http::get($url);
@@ -18,10 +19,21 @@ class AreaController extends Controller
     public function index()
     {
         $url = env('URL_SERVER_API');
+
         $areas = $this->fetchDataFromApi($url . '/areas');
 
         return view('Area.index', compact('areas'));
     }
+
+    public function show($id)
+    {
+        $url = env('URL_SERVER_API');
+
+        $area = $this->fetchDataFromApi($url . '/areas/' . $id);
+
+        return view('Area.show', compact('area'));
+    }
+
 
     public function create()
     {
@@ -30,18 +42,19 @@ class AreaController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'imagen' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
+
         $url = env('URL_SERVER_API');
-        Http::post($url . '/areas', $request->only(['name']))->throw();
+        $file = $request->file('imagen');
 
-        return redirect()->route('area.index')->with('success', 'Área creada correctamente.');
-    }
+        Http::attach('imagen', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
+            ->post($url . '/areas', ['name' => $request->name])
+            ->throw();
 
-    public function show($id)
-    {
-        $url = env('URL_SERVER_API');
-        $area = $this->fetchDataFromApi($url . '/areas/' . $id);
-
-        return view('Area.show', compact('area'));
+        return redirect()->route('area.index');
     }
 
     public function edit($id)
@@ -55,16 +68,17 @@ class AreaController extends Controller
     public function update(Request $request, $id)
     {
         $url = env('URL_SERVER_API');
-        Http::put($url . '/areas/' . $id, $request->only(['name']))->throw();
 
-        return redirect()->route('area.index')->with('success', 'Área actualizada correctamente.');
+        Http::put($url . '/areas/' . $id, $request->all())->throw();
+
+        return redirect()->route('area.index');
     }
 
     public function destroy($id)
     {
         $url = env('URL_SERVER_API');
         Http::delete($url . '/areas/' . $id)->throw();
-
-        return redirect()->route('area.index')->with('success', 'Área eliminada correctamente.');
+        return redirect()->route('area.index');
     }
+
 }

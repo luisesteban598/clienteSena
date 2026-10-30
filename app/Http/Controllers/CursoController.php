@@ -23,6 +23,14 @@ class CursoController extends Controller
         return view('Curso.index', compact('courses'));
     }
 
+    public function show($id)
+    {
+        $url = env('URL_SERVER_API');
+        $course = $this->fetchDataFromApi($url . '/courses/' . $id);
+
+        return view('Curso.show', compact('course'));
+    }
+
     public function create()
     {
         $url = env('URL_SERVER_API');
@@ -44,14 +52,6 @@ class CursoController extends Controller
         ]))->throw();
 
         return redirect()->route('curso.index')->with('success', 'Curso creado correctamente.');
-    }
-
-    public function show($id)
-    {
-        $url = env('URL_SERVER_API');
-        $course = $this->fetchDataFromApi($url . '/courses/' . $id);
-
-        return view('Curso.show', compact('course'));
     }
 
     public function edit($id)

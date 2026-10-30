@@ -18,7 +18,7 @@
                     <a href="{{ route('trainingCenter.index') }}" class="management-primary-action">Centros</a>
                     <a href="{{ route('teacher.index') }}" class="management-primary-action">Instructores</a>
                     <a href="{{ route('curso.index') }}" class="management-primary-action">Cursos</a>
-                    <a href="{{ route('news.public') }}" class="management-primary-action">Noticias</a>
+                    <a href="{{ route('apprentice.index') }}" class="management-primary-action">Aprendices</a>
                 </div>
             </div>
         </div>

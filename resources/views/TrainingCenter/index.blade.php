@@ -1,87 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-<main class="management-page">
-    @include('includes.flash')
+    <div class="container mt-4">
+        <h1 class="mb-4">Lista de centros de formación</h1>
 
-    <div class="management-header">
-        <div>
-            <span class="management-kicker">Gestión institucional</span>
-            <h1>Centros de formación</h1>
-            <p>Administra las sedes y ubicaciones donde se desarrolla la formación.</p>
-        </div>
-        <a href="{{ route('trainingCenter.create') }}" class="management-primary-action">
-            <span>+</span> Nuevo centro
-        </a>
-    </div>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                    <th>Imagen</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
 
-    <section class="management-card">
-        <div class="management-toolbar">
-            <div>
-                <strong>{{ count($trainingCenters) }}</strong>
-                <span> {{ count($trainingCenters) === 1 ? 'centro registrado' : 'centros registrados' }}</span>
-            </div>
-            <label class="management-search">
-                <span aria-hidden="true">⌕</span>
-                <input type="search" id="trainingCenterSearch" placeholder="Buscar por nombre o ubicación..." aria-label="Buscar en la lista">
-            </label>
-        </div>
+                <tr>
+                    <td colspan="5">
+                    <a href="{{ route('trainingCenter.create') }}" class="btn btn-outline-success btn-sm">Nuevo centro</a>
+                    </td>
+                </tr>
 
-        <div class="management-table-wrap">
-            <table class="management-table">
-                <thead>
+                @forelse ($trainingCenters as $trainingCenter)
                     <tr>
-                        <th scope="col">Identificador</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Ubicación</th>
-                        <th scope="col" class="management-actions-heading">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($trainingCenters as $trainingCenter)
-                    <tr class="filter-row" data-search="{{ strtolower($trainingCenter['name'] . ' ' . $trainingCenter['location']) }}">
-                        <td><span class="record-id">#{{ str_pad($trainingCenter['id'], 3, '0', STR_PAD_LEFT) }}</span></td>
-                        <td><strong>{{ $trainingCenter['name'] }}</strong></td>
+                        <td>{{ $trainingCenter['id'] }}</td>
+                        <td>{{ $trainingCenter['name'] }}</td>
                         <td>{{ $trainingCenter['location'] }}</td>
+                        <td><img src="{{ $trainingCenter['imagen_url'] ?? '' }}" alt="{{ $trainingCenter['name'] }}" width="100">
+                        </td>
                         <td>
-                            <div class="management-actions">
-                                <a href="{{ route('trainingCenter.show', $trainingCenter['id']) }}" class="table-action table-action-view">Ver</a>
-                                <a href="{{ route('trainingCenter.edit', $trainingCenter['id']) }}" class="table-action table-action-edit">Editar</a>
-                                <form action="{{ route('trainingCenter.destroy', $trainingCenter['id']) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="table-action table-action-delete"
-                                        onclick="return confirm('¿Deseas eliminar este centro?')">Eliminar</button>
-                                </form>
-                            </div>
+                            <a href="{{ route('trainingCenter.show', $trainingCenter['id']) }}" class="btn btn-info btn-sm">Ver más</a>
+                            <a href="{{ route('trainingCenter.edit', $trainingCenter['id']) }}"
+                                class="btn btn-warning btn-sm">Editar</a>
+                            <form action="{{ route('trainingCenter.destroy', $trainingCenter['id']) }}" method="POST"
+                                style="display: inline-block;"
+                                onsubmit="return confirm('¿Estás seguro de eliminar este centro?')">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
                         </td>
                     </tr>
-                    @empty
+                @empty
                     <tr>
-                        <td colspan="4" class="management-empty">Todavía no hay centros registrados.</td>
+                        <td colspan="4">No hay áreas registradas.</td>
                     </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <p class="management-no-results" hidden>No encontramos centros con ese criterio.</p>
-    </section>
-</main>
-
-<script>
-    // Filtra la tabla mientras se escribe.
-    document.getElementById('trainingCenterSearch')?.addEventListener('input', (event) => {
-        const term = event.target.value.trim().toLowerCase();
-        const rows = document.querySelectorAll('.filter-row');
-        let visible = 0;
-
-        rows.forEach((row) => {
-            const match = row.dataset.search.includes(term);
-            row.hidden = !match;
-            if (match) visible++;
-        });
-
-        document.querySelector('.management-no-results').hidden = visible !== 0;
-    });
-</script>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 @endsection

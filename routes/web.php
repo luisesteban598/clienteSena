@@ -86,7 +86,6 @@ Route::put('apprentice/update/{apprentice}', [ApprenticeController::class, 'upda
 Route::delete('apprentice/delete/{apprentice}', [ApprenticeController::class, 'destroy'])->name('apprentice.destroy');
 
 // NewsController
-Route::get('noticias/create', [NewsController::class, 'create'])->name('news.create.localized');
 Route::get('news/list', [NewsController::class, 'index'])->name('news.index');
 Route::get('news/create', [NewsController::class, 'create'])->name('news.create');
 Route::post('news/store', [NewsController::class, 'store'])->name('news.store');

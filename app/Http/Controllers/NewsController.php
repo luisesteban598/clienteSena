@@ -31,6 +31,14 @@ class NewsController extends Controller
         return view('News.index', compact('news'));
     }
 
+    public function show($id)
+    {
+        $url = env('URL_SERVER_API');
+        $news = $this->fetchDataFromApi($url . '/news/' . $id);
+
+        return view('News.show', compact('news'));
+    }
+
     public function create()
     {
         return view('News.create');
@@ -55,14 +63,6 @@ class NewsController extends Controller
         Http::post($url . '/news', $payload)->throw();
 
         return redirect()->route('news.index')->with('success', 'Noticia creada correctamente.');
-    }
-
-    public function show($id)
-    {
-        $url = env('URL_SERVER_API');
-        $news = $this->fetchDataFromApi($url . '/news/' . $id);
-
-        return view('News.show', compact('news'));
     }
 
     public function edit($id)

@@ -23,6 +23,14 @@ class ComputerController extends Controller
         return view('Computer.index', compact('computers'));
     }
 
+    public function show($id)
+    {
+        $url = env('URL_SERVER_API');
+        $computer = $this->fetchDataFromApi($url . '/computers/' . $id);
+
+        return view('Computer.show', compact('computer'));
+    }
+
     public function create()
     {
         return view('Computer.create');
@@ -34,14 +42,6 @@ class ComputerController extends Controller
         Http::post($url . '/computers', $request->only(['number', 'brand']))->throw();
 
         return redirect()->route('computer.index')->with('success', 'Computador creado correctamente.');
-    }
-
-    public function show($id)
-    {
-        $url = env('URL_SERVER_API');
-        $computer = $this->fetchDataFromApi($url . '/computers/' . $id);
-
-        return view('Computer.show', compact('computer'));
     }
 
     public function edit($id)
